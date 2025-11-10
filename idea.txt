@@ -1,0 +1,30 @@
+How game will look -
+1. When user enters the game 2 option will be provided 
+2. where user can either start a new game by entering a unique gameId - which user has to remember 
+3. or user can play his/her previous game by entering gameId - this gameId might serve as password 
+
+Case 1 - where user is creating a new game 
+1. we make user to enter grid size to start game 
+2. and once that is done we will be save game using gameId set by the user
+
+
+Case 2 - where user plays a already present game 
+
+
+
+How Game will be saved -
+1. For all games only one file will be used - as we won't have a lot of info to save [saved_data.txt]
+2. Each game will separated by '#' 
+3. Info saved for each game would be in this order -> 
+    gameId_points_gridSize/boardState_gridSize/block1_gridSize/block2_gridSize/block3...#
+4. Board or block will be saved 0 and 1 - where 0 means empty space and 1 means occupied
+5. After each move is played game state would be saved 
+    a. for saving we will create new file named [saved_data_new.txt]
+    b. first we will copy [saved_data] file data in this new [saved_data_new.txt] file 
+    c. then update the data of the specific gameId in this new file
+    d. if this operation completes successfully we will rename [saved_data_new] to [saved_data]
+    e. else we will repeat this process
+6. In each state save process we will be updating board state, points and blocks.
+7. Once the game starts [SaveGame] object will be initialzed with old data
+8. Once the [saveGamesState] will be called - we will look for data for specific game id 
+9. We will remove game_id data and append all that data in the end
