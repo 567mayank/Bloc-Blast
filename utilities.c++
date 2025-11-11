@@ -1,4 +1,5 @@
 #include "headers.c++"
+#pragma once
 
 class Utilities {
 public:
@@ -17,6 +18,18 @@ public:
     // add the last item to the result if delimiter is not present at last
     if (item.length() > 0) {
       result.push_back(item);
+    }
+    return result;
+  }
+
+  static string join(vector<string> data, char delimiter) {
+    string result = "";
+    for (string item : data) {
+      result += item;
+      // if the item is not the last item, add the delimiter
+      if (item != data.back()) {
+        result += delimiter;
+      }
     }
     return result;
   }

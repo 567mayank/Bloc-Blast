@@ -1,4 +1,5 @@
 #include "headers.c++"
+#pragma once
 class Constants {
 public:
   static const string savedDataFileName;

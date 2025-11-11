@@ -43,3 +43,7 @@ void printGameSavedOnTerminal() {
 void printGameLoadedOnTerminal() {
   cout << "Game Loaded" << endl;
 }
+
+void printGameLoadFailedOnTerminal() {
+  cout << "Game Load Failed" << endl;
+}
