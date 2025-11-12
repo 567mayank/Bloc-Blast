@@ -1,8 +1,8 @@
 #include "headers.c++"
-#include "game.c++"
-
+#include "game_controller.c++"
 int main() {
-    // Game* game = new Game(8);
-    // game -> printBoard();
-    return 0;
+  GameController *controller = new GameController();
+  controller->initApp();
+  delete controller;
+  return 0;
 }

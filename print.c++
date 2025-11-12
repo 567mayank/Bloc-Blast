@@ -1,22 +1,21 @@
 #include "headers.c++"
+#include "block.c++"
 
-void getBoardOnTerminal(vector<vector<int>> board) {
-  cout << "Board:" << endl;
-  for (int i = 0; i < board.size(); i++) {
-    for (int j = 0; j < board[i].size(); j++) {
-      cout << board[i][j] << " ";
-    }
-    cout << endl;
-  }
-}
-
-void getBlockOnTerminal(vector<vector<int>> block) {
+void getBlockOnTerminal(vector<vector<int>> block, string zeroSymbol = "0", string oneSymbol = "1") {
   cout << "Block:" << endl;
   for (int i = 0; i < block.size(); i++) {
     for (int j = 0; j < block[i].size(); j++) {
       cout << block[i][j] << " ";
     }
     cout << endl;
+  }
+}
+
+void printRecommendedBlocksOnTerminal(vector<Block *> recommendedBlocks, string zeroSymbol = "0", string oneSymbol = "1") {
+  for (int i = 0; i < recommendedBlocks.size(); i++) {
+    Block *block = recommendedBlocks[i];
+    cout << "Recommended Block " << i + 1 << ":" << endl;
+    getBlockOnTerminal(block->getBlock(), zeroSymbol, oneSymbol);
   }
 }
 
@@ -36,8 +35,14 @@ void printGameOverOnTerminal() {
   cout << "Game Over -- as no space is left on the board" << endl;
 }
 
+//// Game Save and Load related messages ---------------------------------------
+
 void printGameSavedOnTerminal() {
   cout << "Game Saved" << endl;
+}
+
+void printGameSavedFailedOnTerminal() {
+  cout << "Game Save Failed" << endl;
 }
 
 void printGameLoadedOnTerminal() {

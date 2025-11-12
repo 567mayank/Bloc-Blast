@@ -1,4 +1,5 @@
 #include "headers.c++"
+#include "constants.c++"
 #pragma once
 
 class Utilities {
@@ -41,5 +42,13 @@ public:
       }
     }
     return true;
+  }
+
+  static string getFileNameForSpecificGame(string gameId) {
+    return Constants::savedDataFileName + "_" + gameId;
+  }
+
+  static string addFileExtensionToFileName(string fileName) {
+    return fileName + ".txt";
   }
 };

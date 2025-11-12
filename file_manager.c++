@@ -1,6 +1,6 @@
 #include "log.c++"
+#include "utilities.c++"
 #pragma once
-
 
 class FileManager {
   fstream file;       // manages both read and write
@@ -27,16 +27,6 @@ public:
     return true;
   }
 
-  // Write a line to the file
-  bool writeLine(const string &text) {
-    if (!file.is_open() || !(mode & ios::out)) {
-      Log::logError("File not open for writing.", "File Manager", "");
-      return false;
-    }
-    file << text << endl;
-    return true;
-  }
-
   // Read one line from the file
   string readLine() {
     if (!file.is_open() || !(mode & ios::in)) {
@@ -51,12 +41,27 @@ public:
     return "";
   }
 
-  // Move cursor to start of file
-  void resetCursor() {
-    if (file.is_open()) {
-      file.clear();  // clear any EOF flags
-      file.seekg(0); // move read pointer to beginning
+  // Write a line to the file
+  bool writeLine(const string &text, const string &fname) {
+    cout<<text<<endl;
+    string fileName = Utilities::addFileExtensionToFileName(fname);
+    string fileNameCopy = Utilities::addFileExtensionToFileName(fname + "_copy");
+
+    // Write the data to the fileNameCopy (temp file)
+    ofstream tempFile(fileNameCopy, ios::out | ios::trunc);
+    if (!tempFile.is_open()) {
+      Log::logError("Failed to open temp file '" + fileNameCopy + "' for writing.", "File Manager", "");
+      return false;
     }
+    tempFile << text;
+    tempFile.close();
+
+    /// rename the fileNameCopy to fileName
+    if (rename(fileNameCopy.c_str(), fileName.c_str()) != 0) {
+      Log::logError("Failed to rename temp file '" + fileNameCopy + "' to '" + fileName + "'", "Saving Game", "File Manager");
+      return false;
+    }
+    return true;
   }
 
   // Close the file

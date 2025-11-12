@@ -1,24 +1,17 @@
-#include "constants.c++"
 #include "headers.c++"
-#include "utilities.c++"
-
+#include "file_manager.c++"
 class SaveGame {
-  string savedData;
-
-  void saveGame(string data) { this->savedData = data; }
+  string data;
 
   void saveGamesState(string gameId) {
-    vector<string> data = Utilities::split(this->savedData, Constants::interGameDelimiter);
-    for (string d : data) {
-      vector<string> gameData = Utilities::split(d, Constants::intraGameDelimiter);
-      if (gameData.size() == 0) {
-        /// print error message
-        continue;
-      }
-      if (gameData[0] != gameId) {
-        continue;
-      }
-    }
-    // this->savedData += "#" + gameId + "_" + this->savedData;
+    FileManager *fileManager = new FileManager();
+    fileManager->writeLine(this->data, Utilities::getFileNameForSpecificGame(gameId));
+    delete fileManager;
+  }
+
+public:
+  SaveGame(string data, string gameId) {
+    this->data = data;
+    saveGamesState(gameId);
   }
 };
