@@ -54,4 +54,12 @@ public:
     delete game;
     return nullptr;
   }
+
+  bool isGameIdAvailableInSavedGames(string gameId) {
+    return find(this->savedGameIds.begin(), this->savedGameIds.end(), gameId) != this->savedGameIds.end();
+  }
+
+  string getSavedDataStringForAllGames() {
+    return this->savedDataStringForAllGames;
+  }
 };

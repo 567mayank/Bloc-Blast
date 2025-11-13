@@ -3,15 +3,19 @@
 class SaveGame {
   string data;
 
-  void saveGamesState(string gameId) {
+  void saveGamesState(string gameId, bool addInMainFile = false) {
     FileManager *fileManager = new FileManager();
-    fileManager->writeLine(this->data, Utilities::getFileNameForSpecificGame(gameId));
+    string fileName = Utilities::getFileNameForSpecificGame(gameId);
+    if (addInMainFile) {
+      fileName = Constants::savedDataFileName;
+    }
+    fileManager->writeLine(this->data, fileName);
     delete fileManager;
   }
 
 public:
-  SaveGame(string data, string gameId) {
+  SaveGame(string data, string gameId, bool addInMainFile = false) {
     this->data = data;
-    saveGamesState(gameId);
+    saveGamesState(gameId, addInMainFile);
   }
 };

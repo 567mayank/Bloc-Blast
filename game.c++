@@ -14,7 +14,7 @@ class Game {
   vector<Block *> recommendedBlocks;
 
   /// this will be used to store the points of the game
-  int points;
+  int points = 0;
 
   /// this will be used to store the game data in text format
   string gameDataString;
@@ -63,6 +63,12 @@ class Game {
   }
 
 public:
+  Game(string gameId, int gridSize) {
+    this->gameId = gameId;
+    this->board = new Block(gridSize);
+    this->isValid = true;
+    this->updateGame();
+  }
   /// this will be used to load the game from the saved data
   Game(string gameData) {
     vector<string> gameDataItems = Utilities::split(gameData, Constants::intraGameDelimiter);

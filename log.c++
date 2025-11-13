@@ -9,7 +9,18 @@
 
 class Log {
 public:
-  static void logError(string error, string header = "Error", string fileName = "") {
-    cout << header << " : " << fileName << " : " << error << endl;
+  static void logError(string error, string header = "Error", string fileName = "", int line = 0) {
+    cout << "ERROR: " << header << " : "
+         << " : " << error << " : " << fileName << " : " << line << endl;
+  }
+
+  static void logWarning(string warning, string header = "Warning", string fileName = "", int line = 0) {
+    cout << "WARNING: " << header << " : "
+         << " : " << warning << " : " << fileName << " : " << line << endl;
+  }
+
+  static void logInfo(string info, string header = "Info", string fileName = "", int line = 0) {
+    cout << "INFO: " << header << " : "
+         << " : " << info << " : " << fileName << " : " << line << endl;
   }
 };

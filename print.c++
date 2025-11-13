@@ -52,3 +52,7 @@ void printGameLoadedOnTerminal() {
 void printGameLoadFailedOnTerminal() {
   cout << "Game Load Failed" << endl;
 }
+
+void printGameIdNotAvailableOnTerminal() {
+  cout << "Game Id Not Available in Saved Games -- Please try again" << endl;
+}

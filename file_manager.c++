@@ -43,7 +43,6 @@ public:
 
   // Write a line to the file
   bool writeLine(const string &text, const string &fname) {
-    cout<<text<<endl;
     string fileName = Utilities::addFileExtensionToFileName(fname);
     string fileNameCopy = Utilities::addFileExtensionToFileName(fname + "_copy");
 
@@ -68,7 +67,7 @@ public:
   void close() {
     if (file.is_open()) {
       file.close();
-      Log::logError("File closed successfully.", "File Manager", "");
+      Log::logInfo("File closed successfully.", "File Manager", __FILE__, __LINE__);
     }
   }
 

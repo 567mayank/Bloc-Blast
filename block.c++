@@ -97,6 +97,13 @@ class Block {
   }
 
 public:
+  Block(int gridSize) {
+    this->blockGridSize = gridSize;
+    this->block = vector<vector<int>>(gridSize, vector<int>(gridSize, 0));
+    this->isValid = true;
+    this->updateBlock();
+    Log::logInfo("Block created successfully", "Block constructor", __FILE__, __LINE__);
+  }
   /// this will be used to load the block from the saved data
   Block(string blockData) {
     vector<string> blockDataItems = Utilities::split(blockData, Constants::blockDelimiter);
