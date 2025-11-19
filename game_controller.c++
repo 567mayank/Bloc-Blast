@@ -78,7 +78,7 @@ class GameController {
   }
 
   void startGameFlow() {
-    /// TODO: implement flow for game flow
+    this->currentGame->startGame();
   }
 
 public:

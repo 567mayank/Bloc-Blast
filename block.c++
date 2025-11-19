@@ -59,7 +59,7 @@ class Block {
   /// this will be called whenever the block is updated
   void updateBlock() {
     this->generateBlockDataInTextFormat();
-    /// add more items later on
+    /// TODO: to implement where certain section of block [i.e. board] is cleared as whole row or column is cleared
   }
 
   /// block data format looks like this - gridSize/blockData example -
@@ -94,6 +94,18 @@ class Block {
     }
 
     return true;
+  }
+
+  /// this is used to place a block on the board
+  pair<int, int> getFirstFilledPositionInBlock() {
+    for (int i = 0; i < this->block.size(); i++) {
+      for (int j = 0; j < this->block[i].size(); j++) {
+        if (this->block[i][j] == 1) {
+          return make_pair(i, j);
+        }
+      }
+    }
+    return make_pair(-1, -1);
   }
 
 public:
@@ -140,5 +152,34 @@ public:
 
   bool isBlockValid() {
     return this->isValid;
+  }
+
+  //// this will be used to place the block on the board
+  //// this will be called only by the [board] of [Gam]e class
+  void placeBlock(Block *block, int row, int column) {
+    pair<int, int> firstFilledPosition = block->getFirstFilledPositionInBlock();
+    if (firstFilledPosition.first == -1 || firstFilledPosition.second == -1) {
+      Log::logError("Invalid block - empty block", "Place Block", __FILE__, __LINE__);
+      return;
+    }
+    int actualRow = row - firstFilledPosition.first;
+    int actualColumn = column - firstFilledPosition.second;
+    vector<vector<int>> blockData = block->getBlock();
+    for (int i = 0; i < blockData.size(); i++) {
+      for (int j = 0; j < blockData[i].size(); j++) {
+        if (blockData[i][j] == 0) {
+          //// this means the cell is empty in block so we can skip it
+          continue;
+        }
+        this->block[actualRow + i][actualColumn + j] = blockData[i][j];
+      }
+    }
+    this->updateBlock();
+  }
+
+  ~Block() {
+    this->block.clear();
+    this->blockDataString.clear();
+    this->isValid = false;
   }
 };

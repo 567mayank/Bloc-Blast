@@ -43,29 +43,6 @@ class UserInput {
     return true;
   }
 
-  bool validatePosition(string position) {
-    if (position.empty()) {
-      return false;
-    }
-    if (position.find(Constants::whiteSpace) != string::npos) {
-      return false;
-    }
-    vector<string> positionItems = Utilities::split(position, Constants::intraGameDelimiter);
-    if (positionItems.size() != 3) {
-      return false;
-    }
-    if (!Utilities::isInt(positionItems[0])) {
-      return false;
-    }
-    if (!Utilities::isInt(positionItems[1])) {
-      return false;
-    }
-    if (!Utilities::isInt(positionItems[2])) {
-      return false;
-    }
-    return true;
-  }
-
 public:
   Constants::UserInput askUserToPlayNewGameOrSavedGame() {
     string input = askUserForInput("Enter 'n' to play new game or 's' to play saved game: ");
@@ -105,14 +82,6 @@ public:
   }
 
   string askUserForPositionToPlaceBlock() {
-    string position = askUserForInput("Enter the position to place the block format (blockNumber_row_column) i.e. 1_2_3: ");
-    while (true) {
-      if (!validatePosition(position)) {
-        position = askUserToReEnterInput("Enter Position Again without any white space and in the format (blockNumber_row_column) i.e. 1_2_3: ");
-      } else {
-        return position;
-      }
-    }
-    return "";
+    return askUserForInput("Enter the position to place the block format (blockNumber_row_column) i.e. 1_2_3: ");
   }
 };

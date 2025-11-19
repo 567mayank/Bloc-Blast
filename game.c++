@@ -1,6 +1,7 @@
 #include "print.c++"
 #include "block.c++"
 #include "save_game.c++"
+#include "user_input.c++"
 #pragma once
 class Game {
   /// this will be used to store the game id
@@ -21,6 +22,9 @@ class Game {
 
   /// this will be used to store the validity of the game
   bool isValid = false;
+
+  /// this will be used to store the user input object
+  UserInput *userInput = nullptr;
 
   /// this will be used to generate the game data in text format
   void generateGameInTextFormat() {
@@ -60,6 +64,103 @@ class Game {
   void initSaveGameFlow() {
     SaveGame *saveGame = new SaveGame(gameDataString, this->gameId);
     delete saveGame;
+  }
+
+  /// this will be called whenever we need to get user input to place a block
+  /// it will validate the input and return the input if valid
+  /// or else this function will keep asking user to enter input(recurssively) until valid input is entered
+  string getUserInputToPlaceBlock() {
+    string input = this->userInput->askUserForPositionToPlaceBlock();
+    if (!validateUserInputToPlaceBlock(input)) {
+      return getUserInputToPlaceBlock();
+    }
+    return input;
+  }
+
+  bool validateUserInputToPlaceBlock(string position) {
+    int blockNumber = 0;
+    int row = 0;
+    int column = 0;
+
+    //// validating the position is not empty
+    if (position.empty()) {
+      Log::logError("Invalid input - empty input", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    if (position.find(Constants::whiteSpace) != string::npos) {
+      Log::logError("Invalid input - white space found", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    vector<string> positionItems = Utilities::split(position, Constants::intraGameDelimiter);
+    if (positionItems.size() != 3) {
+      Log::logError("Invalid input - position items size mismatch expected 3 but got " + to_string(positionItems.size()), "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+
+    //// validating the block number is a valid integer
+    if (!Utilities::isInt(positionItems[0])) {
+      Log::logError("Invalid input - block number not a valid integer", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    if (!Utilities::isInt(positionItems[1])) {
+      Log::logError("Invalid input - row not a valid integer", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    if (!Utilities::isInt(positionItems[2])) {
+      Log::logError("Invalid input - column not a valid integer", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+
+    //// converting the string items to integers
+    blockNumber = stoi(positionItems[0]);
+    row = stoi(positionItems[1]);
+    column = stoi(positionItems[2]);
+
+    //// validating the numbers are in range
+    if (blockNumber >= this->recommendedBlocks.size()) {
+      Log::logError("Invalid input - block number out of range", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    if (row >= this->board->getBlockGridSize()) {
+      Log::logError("Invalid input - row out of range", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    if (column >= this->board->getBlockGridSize()) {
+      Log::logError("Invalid input - column out of range", "Validate User Input to Place Block", __FILE__, __LINE__);
+      return false;
+    }
+
+    //// validating the position is empty for the block - where user wants to place the block
+    if (!validatePositionOnBoardIsEmptyForBlock(blockNumber, row, column)) {
+      return false;
+    }
+    return true;
+  }
+
+  bool validatePositionOnBoardIsEmptyForBlock(int blockNumber, int row, int column) {
+    //// TODO: implement this function
+    return true;
+  }
+
+  void placeBlockOnBoard(string position) {
+    int blockNumber = 0;
+    int row = 0;
+    int column = 0;
+    vector<string> positionItems = Utilities::split(position, Constants::intraGameDelimiter);
+    blockNumber = stoi(positionItems[0]);
+    row = stoi(positionItems[1]);
+    column = stoi(positionItems[2]);
+
+    /// placing the block on the board
+    this->board->placeBlock(recommendedBlocks[blockNumber], row, column);
+
+    /// removing the block from the recommended blocks
+    removeBlockFromRecommendedBlocks(blockNumber);
+  }
+
+  void removeBlockFromRecommendedBlocks(int blockNumber) {
+    delete this->recommendedBlocks[blockNumber];
+    this->recommendedBlocks.erase(this->recommendedBlocks.begin() + blockNumber);
   }
 
 public:
@@ -114,6 +215,18 @@ public:
 
   bool isGameValid() {
     return this->isValid;
+  }
+
+  void startGame() {
+    this->userInput = new UserInput();
+    while (true) {
+      printBoard();
+      printRecommendedBlocks();
+      string input = getUserInputToPlaceBlock();
+      placeBlockOnBoard(input);
+      updateGame();
+    }
+    printGameOverOnTerminal();
   }
 
   /// destructor to dispose the objects
