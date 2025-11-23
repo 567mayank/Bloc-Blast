@@ -68,7 +68,7 @@ class Game {
 
   /// this will be called whenever we need to get user input to place a block
   /// it will validate the input and return the input if valid
-  /// or else this function will keep asking user to enter input(recurssively) until valid input is entered
+  /// or else this function will keep asking user to enter input(recursively) until valid input is entered
   string getUserInputToPlaceBlock() {
     string input = this->userInput->askUserForPositionToPlaceBlock();
     if (!validateUserInputToPlaceBlock(input)) {
@@ -111,21 +111,21 @@ class Game {
       return false;
     }
 
-    //// converting the string items to integers
-    blockNumber = stoi(positionItems[0]);
-    row = stoi(positionItems[1]);
-    column = stoi(positionItems[2]);
+    //// converting the string items to integers - to make it 0 based indexing
+    blockNumber = stoi(positionItems[0]) - 1;
+    row = stoi(positionItems[1]) - 1;
+    column = stoi(positionItems[2]) - 1;
 
     //// validating the numbers are in range
-    if (blockNumber >= this->recommendedBlocks.size()) {
+    if (blockNumber >= this->recommendedBlocks.size() || blockNumber < 0) { // as we are using 1 based indexing for inputs
       Log::logError("Invalid input - block number out of range", "Validate User Input to Place Block", __FILE__, __LINE__);
       return false;
     }
-    if (row >= this->board->getBlockGridSize()) {
+    if (row >= this->board->getBlockGridSize() || row < 0) { // as we are using 1 based indexing for inputs
       Log::logError("Invalid input - row out of range", "Validate User Input to Place Block", __FILE__, __LINE__);
       return false;
     }
-    if (column >= this->board->getBlockGridSize()) {
+    if (column >= this->board->getBlockGridSize() && column < 0) {
       Log::logError("Invalid input - column out of range", "Validate User Input to Place Block", __FILE__, __LINE__);
       return false;
     }
@@ -134,12 +134,12 @@ class Game {
     if (!validatePositionOnBoardIsEmptyForBlock(blockNumber, row, column)) {
       return false;
     }
+    Log::logInfo("Valid input - position is empty for the block", "Validate User Input to Place Block", __FILE__, __LINE__);
     return true;
   }
 
   bool validatePositionOnBoardIsEmptyForBlock(int blockNumber, int row, int column) {
-    //// TODO: implement this function
-    return true;
+    return this->board->isPositionOnBoardEmptyForBlock(recommendedBlocks[blockNumber], row, column);
   }
 
   void placeBlockOnBoard(string position) {
@@ -147,9 +147,10 @@ class Game {
     int row = 0;
     int column = 0;
     vector<string> positionItems = Utilities::split(position, Constants::intraGameDelimiter);
-    blockNumber = stoi(positionItems[0]);
-    row = stoi(positionItems[1]);
-    column = stoi(positionItems[2]);
+    /// converting user input to 0 basec indexing
+    blockNumber = stoi(positionItems[0]) - 1;
+    row = stoi(positionItems[1]) - 1;
+    column = stoi(positionItems[2]) - 1;
 
     /// placing the block on the board
     this->board->placeBlock(recommendedBlocks[blockNumber], row, column);

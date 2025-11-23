@@ -154,6 +154,35 @@ public:
     return this->isValid;
   }
 
+  bool isPositionOnBoardEmptyForBlock(Block *block, int row, int column) {
+    pair<int, int> firstFilledPosition = block->getFirstFilledPositionInBlock();
+    if (firstFilledPosition.first == -1 || firstFilledPosition.second == -1) {
+      Log::logError("Invalid block - empty block", "Place Block", __FILE__, __LINE__);
+      return false;
+    }
+    int actualRow = row - firstFilledPosition.first;
+    int actualColumn = column - firstFilledPosition.second;
+    vector<vector<int>> blockData = block->getBlock();
+    for (int i = 0; i < blockData.size(); i++) {
+      for (int j = 0; j < blockData[i].size(); j++) {
+        if (blockData[i][j] == 0) {
+          //// this means the cell in block itself is empty so we can skip it
+          continue;
+        }
+        if (actualRow + i >= this->blockGridSize || actualColumn + j >= this->blockGridSize || actualRow + i < 0 || actualColumn + j < 0) {
+          Log::logError("Invalid position - position is out of range", "Place Block", __FILE__, __LINE__);
+          return false;
+        }
+        //// this means the cell on board is already filled so we return false
+        if (this->block[actualRow + i][actualColumn + j] == 1) {
+          Log::logError("Invalid position - position is already filled", "Place Block", __FILE__, __LINE__);
+          return false;
+        }
+      }
+    }
+    return true; //// this means the position is empty for the block
+  }
+
   //// this will be used to place the block on the board
   //// this will be called only by the [board] of [Gam]e class
   void placeBlock(Block *block, int row, int column) {
