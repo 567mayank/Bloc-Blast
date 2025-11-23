@@ -108,6 +108,13 @@ class Block {
     return make_pair(-1, -1);
   }
 
+  bool isPositionInBlockEmpty(int row, int col) {
+    if (!checkIfPositionIsInBlock(row, col)) {
+      return false;
+    }
+    return this->block[row][col] == 0;
+  }
+
 public:
   Block(int gridSize) {
     this->blockGridSize = gridSize;
@@ -116,6 +123,7 @@ public:
     this->updateBlock();
     Log::logInfo("Block created successfully", "Block constructor", __FILE__, __LINE__);
   }
+
   /// this will be used to load the block from the saved data
   Block(string blockData) {
     vector<string> blockDataItems = Utilities::split(blockData, Constants::blockDelimiter);
@@ -138,22 +146,19 @@ public:
     return this->block;
   }
 
-  bool isPositionInBlockEmpty(int row, int col) {
-    if (!checkIfPositionIsInBlock(row, col)) {
-      return false;
-    }
-    return this->block[row][col] == 0;
-  }
-
   /// this will be used to get the block data in text format - gridSize/blockData
   string getBlockDataInTextFormat() {
     return this->blockDataString;
   }
 
+  /// this is used to check if the block is valid
+  /// this helps when we are loading the game from the saved data
+  /// as we are loading the block from the saved data, we need to check if the block is valid - after loading process is completed
   bool isBlockValid() {
     return this->isValid;
   }
 
+  /// this is used to check if the position on the board is empty for the block
   bool isPositionOnBoardEmptyForBlock(Block *block, int row, int column) {
     pair<int, int> firstFilledPosition = block->getFirstFilledPositionInBlock();
     if (firstFilledPosition.first == -1 || firstFilledPosition.second == -1) {
@@ -169,12 +174,12 @@ public:
           //// this means the cell in block itself is empty so we can skip it
           continue;
         }
-        if (actualRow + i >= this->blockGridSize || actualColumn + j >= this->blockGridSize || actualRow + i < 0 || actualColumn + j < 0) {
+        if (checkIfPositionIsInBlock(actualRow + i, actualColumn + j)) {
           Log::logError("Invalid position - position is out of range", "Place Block", __FILE__, __LINE__);
           return false;
         }
         //// this means the cell on board is already filled so we return false
-        if (this->block[actualRow + i][actualColumn + j] == 1) {
+        if (!isPositionInBlockEmpty(actualRow + i, actualColumn + j)) {
           Log::logError("Invalid position - position is already filled", "Place Block", __FILE__, __LINE__);
           return false;
         }
@@ -184,7 +189,7 @@ public:
   }
 
   //// this will be used to place the block on the board
-  //// this will be called only by the [board] of [Gam]e class
+  //// this will be called only by the [board] of [Game] class
   void placeBlock(Block *block, int row, int column) {
     pair<int, int> firstFilledPosition = block->getFirstFilledPositionInBlock();
     if (firstFilledPosition.first == -1 || firstFilledPosition.second == -1) {
