@@ -175,7 +175,7 @@ public:
           //// this means the cell in block itself is empty so we can skip it
           continue;
         }
-        if (checkIfPositionIsInBlock(actualRow + i, actualColumn + j)) {
+        if (!checkIfPositionIsInBlock(actualRow + i, actualColumn + j)) {
           Log::logError("Invalid position - position is out of range", "Place Block", __FILE__, __LINE__);
           return false;
         }
