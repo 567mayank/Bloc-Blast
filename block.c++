@@ -66,7 +66,7 @@ class Block {
   /// 3/101_111_101
   bool isBlockDataValid(vector<string> blockDataItems) {
     if (blockDataItems.size() < 2) {
-      Log::logError("Invalid block data", "Load Data", "loadGame");
+      Log::logError("Invalid block data", "Load Data", __FILE__, __LINE__);
       return false;
     }
 
@@ -75,20 +75,20 @@ class Block {
 
     /// gridSize should be a valid integer
     if (!Utilities::isInt(gridSize)) {
-      Log::logError("Invalid grid size - not a valid integer", "Load Data", "loadBlock");
+      Log::logError("Invalid grid size - not a valid integer", "Load Data", __FILE__, __LINE__);
       return false;
     }
 
     int lengthOfblockData = stoi(gridSize) * stoi(gridSize);
 
     if (blockData.length() != lengthOfblockData) {
-      Log::logError("Invalid block data - length mismatch", "Load Data", "load_game");
+      Log::logError("Invalid block data - length mismatch", "Load Data", __FILE__, __LINE__);
       return false;
     }
 
     for (char c : blockData) {
       if (c != '0' && c != '1') {
-        Log::logError("Invalid block data - invalid character", "Load Data", "load_game");
+        Log::logError("Invalid block data - invalid character", "Load Data", __FILE__, __LINE__);
         return false;
       }
     }
@@ -128,7 +128,7 @@ public:
   Block(string blockData) {
     vector<string> blockDataItems = Utilities::split(blockData, Constants::blockDelimiter);
     if (!isBlockDataValid(blockDataItems)) {
-      Log::logError("Invalid block data", "Block", "Load Game");
+      Log::logError("Invalid block data", "Block", __FILE__, __LINE__);
       this->isValid = false;
       return;
     }
@@ -136,6 +136,7 @@ public:
     this->block = convertBlockStringDataToBlockVector(blockDataItems[1]);
     this->isValid = true;
     this->updateBlock();
+    Log::logInfo("Block created successfully from saved data", "Block constructor", __FILE__, __LINE__);
   }
 
   int getBlockGridSize() {
