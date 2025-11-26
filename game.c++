@@ -72,6 +72,8 @@ class Game {
   string getUserInputToPlaceBlock() {
     string input = this->userInput->askUserForPositionToPlaceBlock();
     if (!validateUserInputToPlaceBlock(input)) {
+      // TODO: to print the wrong position entered error message on terminal for user
+      // currently it is being fired as log
       return getUserInputToPlaceBlock();
     }
     return input;
@@ -167,7 +169,7 @@ class Game {
 public:
   Game(string gameId, int gridSize) {
     this->gameId = gameId;
-    this->board = new Block(gridSize);
+    this->board = new Block(gridSize, true);
     this->isValid = true;
     this->updateGame();
   }
@@ -180,7 +182,7 @@ public:
     }
     this->gameId = gameDataItems[0];
     this->points = stoi(gameDataItems[1]);
-    this->board = new Block(gameDataItems[2]);
+    this->board = new Block(gameDataItems[2], true);
     for (int i = 3; i < gameDataItems.size(); i++) {
       this->recommendedBlocks.push_back(new Block(gameDataItems[i]));
     }
